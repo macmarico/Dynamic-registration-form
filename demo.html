@@ -1,57 +1,85 @@
 <!DOCTYPE html>
 <html>
-<head></head>
+<head>
+<style>
+
+.form{
+
+width: 50%;
+position: relative;
+margin: 25% auto;
+
+}
+
+input{
+
+ display: block;
+ margin: 20px auto;
+ padding: 10px;
+ border-radius: 15px;
+
+}
+button{
+   display: block;
+   margin: 20px auto;
+   padding: 10px;
+ border-radius: 15px;
+}
+
+</style>
+
+
+</head>
 
 <body>
 
 <div id="demo"></div>
 
 
+<div class="form">
+
+   <input type="text" placeholder="username">
+   <input type="text" placeholder="username">
+   <button id="myBtn">submit</button>
+
+
+</div>
+
 </body>
 
 <script>
 
+document.getElementById("myBtn").addEventListener("click", myFunction);
 
-function run(callback){
-setTimeout(setvar, 3000, callback);
+const url = 'backend.php';
+
+function myFunction() {
+
+ let h = new Headers();
+ h.append('Accept', 'application/json');
+ let req = new Request(url, {
+
+     method: 'POST',
+     headers: h,
+     mode: 'cors'
+
+ });
+
+fetch(req)
+  // .then below runs when the remote server responds
+  .then(function(response) {
+    // response.text() returns a new promise that resolves with the full response text
+    // when it loads
+    return response.json();
+  })
+  .then(function(text) {
+    // ...and here's the content of the remote file
+    console.log(text); // {"name": "iliakan", "isAdmin": true}
+  });
+
+
+
 }
-
-function runs(callback){
-setTimeout(setvar2, 3000, callback);
-}
-
-function setvar(rt){
-
-     x = 5;
-     rt();
-    console.log(z);
-    runs(tr);
-   
-}
-
-function setvar2(tr){
-
-
-tr();
-
-console.log(i);
-}
-
-
-function rt(){
- 
-   z = x+5;
-     
-}
-
-function tr(){
- 
- i = z+10;
-   
-}
-
-run(rt);
-
 
 </script>
 
