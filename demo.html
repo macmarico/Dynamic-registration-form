@@ -3,27 +3,51 @@
 <head>
 <style>
 
+@font-face {
+    font-family: Roboto-Regular;
+    src: url('fonts/Roboto-Regular.ttf');
+}
+
+
+body{
+ 
+font-family: Roboto-Regular;
+ background-color: #f1f1f1;
+  }
+
+  h1{
+   
+    margin: auto;
+   margin-top: 30vh ;
+   width: 50%;
+   text-align: center;
+
+  }
+
 .form{
 
 width: 50%;
 position: relative;
-margin: 25% auto;
+margin: 0 auto;
 
 }
 
 input{
 
+ width: 30%;
  display: block;
  margin: 20px auto;
  padding: 10px;
  border-radius: 15px;
+ border: none;
 
 }
 button{
    display: block;
    margin: 20px auto;
-   padding: 10px;
  border-radius: 15px;
+ background-color: #f1f1f1;
+ border: none;
 }
 
 </style>
@@ -33,27 +57,83 @@ button{
 
 <body>
 
-<div id="demo"></div>
 
 
+<h1>REGISTER</h1>
+
+
+
+<div id="loginSec">
 <div class="form">
-
-   <input type="text" placeholder="username">
-   <input type="text" placeholder="username">
-   <button id="myBtn">submit</button>
-
-
+ <form id="loginForm">
+   <input type="text" name="username" placeholder="username">
+   <input type="password" name="password" placeholder="password">
+   <button id="myBtn">
+     <svg width="4em" height="4em" viewBox="0 0 16 16" class="bi bi-arrow-right-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-11.5.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"/>
+  </svg>
+</button>
+  </form> 
 </div>
+</div>
+
+
+<div id="registerSec">
+  <div class="form">
+   <form id="loginForm">
+     <input type="text" name="username" placeholder="Username">
+     <input type="email" name="email" placeholder="Email">
+     <input type="password" name="password" placeholder="Password">
+     <input type="password" name="confirmPassword" placeholder="Confirm password">
+     <button id="myBtn">
+       <svg width="4em" height="4em" viewBox="0 0 16 16" class="bi bi-arrow-right-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-11.5.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"/>
+    </svg>
+  </button>
+    </form> 
+  </div>
+  </div>
+
+
+
+
+
+
+
+
+<div style="text-align: center;">Already have an account, click here to <b id="clickReg">login</b></div>
+
+<div id="demo" style="text-align: center;"></div>
 
 </body>
 
 <script>
 
-document.getElementById("myBtn").addEventListener("click", myFunction);
+document.getElementById("loginSec").style.display = "none";
+
+function openReg() {
+
+  document.getElementById("loginSec").style.display = "block";
+  document.getElementById("registerSec").style.display = "none";
+  document.getElementsByTagName("h1")[0].innerHTML = "LOGIN";
+
+}
+
+
+document.getElementById("clickReg").addEventListener('click', openReg);
+
+document.getElementById("loginForm").addEventListener('submit', myFunction);
+
 
 const url = 'backend.php';
 
-function myFunction() {
+function myFunction(ev) {
+
+ ev.preventDefault();
+
+ let loginForm = ev.target;
+ let fd = new FormData(loginForm);
+
 
  let h = new Headers();
  h.append('Accept', 'application/json');
@@ -61,7 +141,8 @@ function myFunction() {
 
      method: 'POST',
      headers: h,
-     mode: 'cors'
+     mode: 'cors',
+     body: fd,
 
  });
 
@@ -75,6 +156,7 @@ fetch(req)
   .then(function(text) {
     // ...and here's the content of the remote file
     console.log(text); // {"name": "iliakan", "isAdmin": true}
+    document.getElementById("demo").innerHTML = text.status;
   });
 
 
