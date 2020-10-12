@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 
 @font-face {
@@ -8,21 +9,33 @@
     src: url('fonts/Roboto-Regular.ttf');
 }
 
-
+*{
+  box-sizing: border-box;
+}
 body{
  
 font-family: Roboto-Regular;
  background-color: #f1f1f1;
   }
+  .main{
+  margin-top: 25vh;
+}
 
   h1{
    
-    margin: auto;
-   margin-top: 30vh ;
+   margin: auto;
    width: 50%;
    text-align: center;
 
   }
+  h2{
+   
+   margin: auto;
+   font-size: 35px;
+  width: 50%;
+  text-align: center;
+
+ }
 
 .form{
 
@@ -50,6 +63,19 @@ button{
  border: none;
 }
 
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+   
+input{
+width: 100%;
+}
+.main{
+  margin-top: 25vh;
+}
+ 
+}
+
 </style>
 
 
@@ -57,9 +83,15 @@ button{
 
 <body>
 
+  <div class="main">
+<!--Home section-->
+<div id="homeSec">
+  <h2>HOME</h2>
+  </div>
+  
+<img src="images/img.svg"  width = '70px' style="display: none; margin: 10vh auto; border-radius: 100%;">
+<h1>LOGIN</h1>
 
-
-<h1>REGISTER</h1>
 
 
 
@@ -80,7 +112,7 @@ button{
 
 <div id="registerSec">
   <div class="form">
-   <form id="loginForm">
+   <form id="registerForm">
      <input type="text" name="username" placeholder="Username">
      <input type="email" name="email" placeholder="Email">
      <input type="password" name="password" placeholder="Password">
@@ -93,75 +125,87 @@ button{
     </form> 
   </div>
   </div>
-
-
-
-
-
-
-
-
-<div style="text-align: center;">Already have an account, click here to <b id="clickReg">login</b></div>
+<div id="footer" style="text-align: center;"> click here to <b id="clickReg">Register</b></div>
 
 <div id="demo" style="text-align: center;"></div>
+<div id="logout" style="text-align: center;"><a href="index.html">Logout</a></div>
+
+</div>
 
 </body>
 
 <script>
 
-document.getElementById("loginSec").style.display = "none";
-
-function openReg() {
-
-  document.getElementById("loginSec").style.display = "block";
-  document.getElementById("registerSec").style.display = "none";
-  document.getElementsByTagName("h1")[0].innerHTML = "LOGIN";
-
-}
-
-
-document.getElementById("clickReg").addEventListener('click', openReg);
-
-document.getElementById("loginForm").addEventListener('submit', myFunction);
-
-
-const url = 'backend.php';
-
-function myFunction(ev) {
-
- ev.preventDefault();
-
- let loginForm = ev.target;
- let fd = new FormData(loginForm);
-
-
- let h = new Headers();
- h.append('Accept', 'application/json');
- let req = new Request(url, {
-
-     method: 'POST',
-     headers: h,
-     mode: 'cors',
-     body: fd,
-
- });
-
-fetch(req)
-  // .then below runs when the remote server responds
-  .then(function(response) {
-    // response.text() returns a new promise that resolves with the full response text
-    // when it loads
-    return response.json();
-  })
-  .then(function(text) {
-    // ...and here's the content of the remote file
-    console.log(text); // {"name": "iliakan", "isAdmin": true}
-    document.getElementById("demo").innerHTML = text.status;
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById("registerSec").style.display = "none";
+    document.getElementById("logout").style.display = "none";
+    document.getElementById("homeSec").style.display = "none";
+    document.getElementById("clickReg").addEventListener('click', nav.registerSec);
+    document.getElementById("clickReg").addEventListener('click', nav.registerSec);
+    document.getElementById("loginForm").addEventListener('submit', login);
+    document.getElementById("registerForm").addEventListener('submit', register);
   });
 
+ let nav = {
+   home(username){
+    document.getElementById("loginSec").style.display = "none";
+    document.getElementById("homeSec").style.display = "block";
+    document.getElementById("registerSec").style.display = "none";
+    document.getElementsByTagName("h1")[0].innerHTML = "Username : "+username;
+    document.getElementsByTagName("h1")[0].style.marginTop = 0;
+    document.getElementsByTagName("img")[0].style.display = "block";
+    document.getElementById("logout").style.display = "block";
+    document.getElementById("footer").style.display = "none";
+   },
+   registerSec(){
+    document.getElementById("loginSec").style.display = "none";
+    document.getElementById("registerSec").style.display = "block";
+    document.getElementsByTagName("h1")[0].innerHTML = "REGISTER";
+   },
+   loginSec(){
+    document.getElementById("loginSec").style.display = "block";
+    document.getElementById("registerSec").style.display = "none";
+    document.getElementsByTagName("h1")[0].innerHTML = "LOGIN";
+   },
+   async authenticate(url,fd){  
+      let h = new Headers();
+      h.append('Accept', 'application/json');
+      let req = new Request(url, {
+          method: 'POST',
+          headers: h,
+          mode: 'cors',
+          body: fd,
+      });
+       response = await fetch(req)
+        let text = await response.json();
+          if(text.status == true){ 
+            return text.name;
+       }
+   }
+ }
 
 
-}
+
+ async function login(ev) {
+        ev.preventDefault();
+        let loginForm = ev.target;
+        let fd = new FormData(loginForm);
+        const url = 'php/login.php';
+        nav.home(await nav.authenticate(url,fd));
+    }
+    
+    async function register(ev) {
+        ev.preventDefault();
+        const url = 'php/register.php';
+        let loginForm = ev.target;
+        let fd = new FormData(loginForm);
+        if(fd.get('password') == fd.get('confirmPassword')){
+        nav.home(await nav.authenticate(url,fd));
+        }else{
+          console.log('password dont match');
+        }
+    }
+
 
 </script>
 
